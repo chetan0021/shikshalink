@@ -57,48 +57,28 @@ export function SignInForm({ onRequestAccess }: { onRequestAccess: () => void })
 
   const demoQuickLogin = async () => {
     setSchoolError(null);
-    try {
-      const res = await apiGet<{ schools: { id: string; name: string }[] }>("/api/system/schools");
-      const first = res.schools[0];
-      if (!first) {
-        setSchoolError("No schools in API seed.");
-        return;
-      }
-      setSession({
-        role: "teacher",
-        displayName: "Demo visitor",
-        schoolId: first.id,
-        schoolName: first.name
-      });
-      router.push("/workspace");
-    } catch {
-      setSchoolError("Cannot reach API. Start backend + set NEXT_PUBLIC_API_URL.");
-    }
+    setSession({
+      role: "teacher",
+      displayName: "Demo visitor",
+      schoolId: "00000000-0000-0000-0000-000000000000",
+      schoolName: "Demo Public School"
+    });
+    router.push("/workspace");
   };
 
   const enterWorkspace = form.handleSubmit(async (values) => {
     setSchoolError(null);
-    try {
-      const res = await apiGet<{ schools: { id: string; name: string }[] }>("/api/system/schools");
-      const first = res.schools[0];
-      if (!first) {
-        setSchoolError("No schools in API seed. Start the backend and run seed.");
-        return;
-      }
-      const display =
-        values.email && values.email.includes("@")
-          ? values.email.split("@")[0] ?? "User"
-          : values.email?.trim() || "Demo user";
-      setSession({
-        role: mapRole(values.role),
-        displayName: display,
-        schoolId: first.id,
-        schoolName: first.name
-      });
-      router.push("/workspace");
-    } catch {
-      setSchoolError("Cannot reach API. Set NEXT_PUBLIC_API_URL and run FastAPI on port 8000.");
-    }
+    const display =
+      values.email && values.email.includes("@")
+        ? values.email.split("@")[0] ?? "User"
+        : values.email?.trim() || "Demo user";
+    setSession({
+      role: mapRole(values.role),
+      displayName: display,
+      schoolId: "00000000-0000-0000-0000-000000000000",
+      schoolName: "Demo Public School"
+    });
+    router.push("/workspace");
   });
 
   const role = form.watch("role");
