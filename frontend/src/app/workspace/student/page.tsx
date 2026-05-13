@@ -189,8 +189,8 @@ function DashboardContent() {
         <div className="space-y-6 relative rounded-3xl p-6 overflow-hidden">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-extrabold text-sl-text tracking-normal drop-shadow-sm">Dashboard</h1>
-                <p className="text-sm font-medium text-black/60 mt-1">Your academic readiness overview</p>
+                <h1 className="text-3xl font-extrabold text-white tracking-normal drop-shadow-sm">Dashboard</h1>
+                <p className="text-sm font-medium text-zinc-400 mt-1">Your academic readiness overview</p>
             </div>
 
             {/* ── Stat cards ── */}
@@ -203,11 +203,11 @@ function DashboardContent() {
                         <CardContent className="p-6">
                             <div className="flex items-center gap-2 mb-3">
                                 <Target size={15} className="text-sl-primary" />
-                                <span className="text-sm font-medium text-black/70">Academic Readiness</span>
+                                <span className="text-sm font-medium text-zinc-300">Academic Readiness</span>
                             </div>
                             <div className="flex items-end gap-2">
-                                <span className="text-4xl font-bold text-sl-text">{displayReadiness}</span>
-                                <span className="text-lg text-black/50 mb-1">/ 100</span>
+                                <span className="text-4xl font-bold text-white">{displayReadiness}</span>
+                                <span className="text-lg text-zinc-500 mb-1">/ 100</span>
                             </div>
                             <div className="mt-3 h-1.5 bg-black/10 rounded-full overflow-hidden">
                                 <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-400 rounded-full transition-all duration-1000" style={{ width: `${Math.min(displayReadiness, 100)}%` }} />
@@ -223,7 +223,7 @@ function DashboardContent() {
                         <CardContent className="p-6">
                             <div className="flex items-center gap-2 mb-3">
                                 <AlertTriangle size={15} className="text-red-500" />
-                                <span className="text-sm font-medium text-black/70">Weak Domains</span>
+                                <span className="text-sm font-medium text-zinc-300">Weak Domains</span>
                             </div>
                             {weakTopics.length === 0 ? (
                                 <p className="text-sm text-black/50 mt-2">{userData ? "No weak topics — great job!" : "Complete an evaluation to start"}</p>
@@ -247,15 +247,15 @@ function DashboardContent() {
                         <CardContent className="p-6">
                             <div className="flex items-center gap-2 mb-3">
                                 <Calendar size={15} className="text-emerald-500" />
-                                <span className="text-sm font-medium text-black/70">Exam Countdown</span>
+                                <span className="text-sm font-medium text-zinc-300">Exam Countdown</span>
                             </div>
                             {daysRemaining !== null ? (
                                 <div className="flex items-end gap-2">
-                                    <span className="text-4xl font-bold text-sl-text shadow-[0_0_15px_rgba(251,191,36,0.2)]">{daysRemaining}</span>
-                                    <span className="text-sm text-black/50 mb-1">days remaining</span>
+                                    <span className="text-4xl font-bold text-white">{daysRemaining}</span>
+                                    <span className="text-lg text-zinc-500 mb-1">days left</span>
                                 </div>
                             ) : (
-                                <p className="text-sm text-black/50 mt-2">Set an interview date in Study Plan</p>
+                                <p className="text-sm text-zinc-500 mt-2">Set an exam date in Study Plan</p>
                             )}
                         </CardContent>
                     </Card>

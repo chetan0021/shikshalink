@@ -46,7 +46,7 @@ function CustomTick({ payload, x, y, cx, cy, ...rest }: {
             y={y + dy}
             textAnchor="middle"
             dominantBaseline="middle"
-            style={{ fontSize: 10, fontWeight: 600, fill: "#a1a1aa", letterSpacing: "0.04em", textTransform: "uppercase" }}
+            style={{ fontSize: 10, fontWeight: 600, fill: "#d4d4d8", letterSpacing: "0.04em", textTransform: "uppercase" }}
         >
             {payload.value}
         </text>

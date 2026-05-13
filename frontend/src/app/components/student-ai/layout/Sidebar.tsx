@@ -26,7 +26,7 @@ export default function Sidebar() {
                     <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#5ec4b1] to-[#7dd3c0] flex items-center justify-center shadow-[0_0_15px_rgba(94,196,177,0.4)]">
                         <span className="text-lg text-white">🎓</span>
                     </div>
-                    <span className="text-lg font-bold text-sl-text tracking-wide">Shiksha Link</span>
+                    <span className="text-xl font-bold text-zinc-100 tracking-tight">Shiksha Link</span>
                 </div>
             </div>
 
@@ -40,13 +40,13 @@ export default function Sidebar() {
                             href={href}
                             className={cn(
                                 isActive
-                                    ? "text-sl-text font-semibold flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-all duration-200 bg-[var(--sl-primary)]/10 border border-[var(--sl-primary)]/20 shadow-[0_0_15px_rgba(94,196,177,0.15)]"
-                                    : "text-black/60 hover:bg-black/5 hover:text-black/80 flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200"
+                                    ? "text-zinc-100 font-semibold flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-all duration-200 bg-[var(--sl-primary)]/10 border border-[var(--sl-primary)]/20 shadow-[0_0_15px_rgba(94,196,177,0.15)]"
+                                    : "text-zinc-300 hover:bg-white/5 hover:text-zinc-100 flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200"
                             )}
                         >
                             <Icon
                                 size={18}
-                                className={isActive ? "text-[#5ec4b1]" : "text-black/50"}
+                                className={isActive ? "text-[#5ec4b1]" : "text-zinc-400"}
                             />
                             {label}
                         </Link>
@@ -56,7 +56,7 @@ export default function Sidebar() {
 
             {/* Footer */}
             <div className="p-4 border-t border-black/10">
-                <p className="text-xs text-zinc-600 text-center font-medium">
+                <p className="text-xs text-zinc-500 text-center font-medium">
                     Shiksha Link — v1.0
                 </p>
             </div>

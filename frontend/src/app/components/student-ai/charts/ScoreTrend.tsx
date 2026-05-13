@@ -80,8 +80,8 @@ export default function ScoreTrend({ data }: { data: TrendPoint[] }) {
 
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
 
-                    <XAxis dataKey="label" tick={{ fontSize: 10, fill: "#a1a1aa" }} axisLine={false} tickLine={false} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#a1a1aa" }} axisLine={false} tickLine={false} width={28} />
+                    <XAxis dataKey="label" tick={{ fontSize: 10, fill: "#d4d4d8" }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#d4d4d8" }} axisLine={false} tickLine={false} width={28} />
 
                     <Tooltip content={<CustomTooltip />} cursor={{ stroke: "rgba(255,255,255,0.1)", strokeWidth: 1 }} />
 
