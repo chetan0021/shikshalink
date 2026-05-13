@@ -1,0 +1,13 @@
+{
+  "name": "shiksha-link",
+  "private": true,
+  "description": "Run UI + API together from the monorepo root",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c blue,green \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "cd backend && python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "dev:web": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

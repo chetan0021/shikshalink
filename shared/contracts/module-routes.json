@@ -1,0 +1,36 @@
+{
+  "frontend": [
+    "/",
+    "/admin-bot",
+    "/parent-voice-ai",
+    "/dropout-risk",
+    "/career-mapper",
+    "/beo-control-center",
+    "/udise-ingestion",
+    "/india-heatmap"
+  ],
+  "backend": [
+    "/health",
+    "/ws/events",
+    "/api/system/demo-context",
+    "/api/admin-bot/pending-tasks",
+    "/api/admin-bot/tasks",
+    "/api/admin-bot/voice-pipeline",
+    "/api/admin-bot/tasks/{task_id}/pdf",
+    "/api/parent-voice-ai/trigger-call",
+    "/api/parent-voice-ai/finalize-demo/{call_id}",
+    "/api/parent-voice-ai/tts-sample",
+    "/api/dropout-risk/cards",
+    "/api/dropout-risk/refresh",
+    "/api/career-mapper/suggestions",
+    "/api/career-mapper/semantic",
+    "/api/beo-control-center/tasks",
+    "/api/beo-control-center/tasks/{task_id}/escalate",
+    "/api/udise-ingestion/upload-csv",
+    "/api/udise-ingestion/adapter-status",
+    "/api/udise-ingestion/adapter/api-sync",
+    "/api/udise-ingestion/adapter/scraper-dry-run",
+    "/api/india-heatmap/metrics",
+    "/api/india-heatmap/geojson"
+  ]
+}

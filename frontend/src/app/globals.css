@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  HAKU-inspired: two-tone calm system
+  — Warm paper + ink + single sage accent (soothing, professional)
+*/
+:root {
+  --sl-paper: #f5f4f0;
+  --sl-paper-muted: #ebe8e2;
+  --sl-ink: #1a1c1b;
+  --sl-ink-muted: #3a3d3b;
+
+  /* Refined palette: Electric Teal & Silver (matching the GIF) */
+  --sl-primary: #5ec4b1; /* Electric Teal */
+  --sl-secondary: #4f6f64;
+  --sl-accent: #7dd3c0; /* Bright Aqua */
+  
+  --sl-silver-bright: #f7f6f3;
+  --sl-silver-mid: #d4d2ce;
+
+  /* Dark band for contrast sections */
+  --sl-bg-dark: #121413; /* Deeper dark for better contrast with glowing particles */
+  --sl-bg-light: var(--sl-paper);
+  --sl-text: var(--sl-ink);
+  --sl-text-light: #f2f1ee;
+  --sl-surface: #1a1c1b;
+
+  --sl-glow: rgba(94, 196, 177, 0.15);
+  --sl-glow-aqua: rgba(125, 211, 192, 0.12);
+  --sl-glow-green: rgba(79, 111, 100, 0.08);
+
+  --sl-silver: rgba(44, 46, 45, 0.12);
+  --sl-silver-strong: rgba(255, 255, 255, 0.15);
+
+  --sl-gold-1: #e8e4dc;
+  --sl-gold-2: #c4b8a8;
+  --sl-gold-3: #ddd6ca;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--sl-paper);
+  color: var(--sl-ink);
+}
+
+@layer utilities {
+  .sl-silver-border {
+    border-color: var(--sl-silver);
+  }
+
+  .sl-silver-ring {
+    box-shadow:
+      0 0 0 1px var(--sl-silver),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      0 12px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Premium Glass: Sharp boundaries with deep blur */
+  .sl-glass {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px) saturate(120%);
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Light panels (paper UI) */
+  .sl-panel-light {
+    border: 1px solid rgba(44, 46, 45, 0.1);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 12px 40px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(8px);
+  }
+
+  .sl-panel-light-hover {
+    transition:
+      transform 320ms ease,
+      box-shadow 320ms ease,
+      border-color 320ms ease;
+  }
+
+  .sl-panel-light-hover:hover {
+    border-color: rgba(44, 46, 45, 0.16);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95) inset,
+      0 18px 50px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  /* Dark panels (contrast sections) */
+  .sl-panel {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 50px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+  }
+
+  .sl-panel-hover {
+    transition:
+      transform 300ms ease,
+      box-shadow 300ms ease,
+      background-color 300ms ease,
+      border-color 300ms ease;
+  }
+
+  .sl-panel-hover:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 18px 60px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .sl-glow {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--sl-primary) 25%, transparent),
+      0 0 24px var(--sl-glow);
+  }
+
+  /* Refined Silver-Teal Gradient */
+  .sl-text-gradient {
+    background: linear-gradient(
+      105deg,
+      #ffffff 0%,
+      var(--sl-silver-mid) 42%,
+      var(--sl-primary) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .sl-text-gold {
+    background: linear-gradient(90deg, var(--sl-gold-1), var(--sl-gold-2), var(--sl-gold-3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .sl-text-silver {
+    background: linear-gradient(90deg, var(--sl-silver-1), var(--sl-silver-2), var(--sl-silver-3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+

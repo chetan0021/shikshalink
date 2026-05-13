@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: shiksha
+      POSTGRES_PASSWORD: shiksha
+      POSTGRES_DB: shiksha_link
+    ports:
+      - "5432:5432"
+    volumes:
+      - shiksha_pg:/var/lib/postgresql/data
+
+volumes:
+  shiksha_pg:

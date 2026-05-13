@@ -1,0 +1,22 @@
+node_modules/
+.next/
+dist/
+build/
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+*.pyc
+.DS_Store
+Thumbs.db
+.env
+.env.local
+*.log
+
+# SQLite runtime database files
+*.db
+*.db-shm
+*.db-wal
+
+# Uvicorn / server artifacts
+127.0.0.1
