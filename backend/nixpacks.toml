@@ -1,0 +1,7 @@
+[phases.install]
+cmds = [
+    "python -m venv /opt/venv",
+    ". /opt/venv/bin/activate && pip install --upgrade pip setuptools wheel",
+    ". /opt/venv/bin/activate && pip install openai-whisper==20240930 --no-build-isolation",
+    ". /opt/venv/bin/activate && pip install -r requirements.txt"
+]
