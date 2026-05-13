@@ -11,7 +11,7 @@ setuptools>=75.0.0
 openai-whisper==20240930
 sentence-transformers==3.2.1
 lightgbm==4.5.0
-numpy>=1.26.0
+numpy>=1.26.0,<2.0.0
 reportlab>=4.2.0
 edge-tts>=6.1.0
 twilio>=8.0.0
