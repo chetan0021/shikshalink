@@ -1,4 +1,5 @@
 import json
+import os
 from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -22,6 +23,16 @@ class GenerateStudyPlanRequest(BaseModel):
     targetRole: str  # Kept as targetRole for compatibility, but represents "Subject/Goal"
     interviewDate: str
     hoursPerDay: int
+
+class EvaluateCodeRequest(BaseModel):
+    code: str
+    topic: str
+
+class RunInterviewRequest(BaseModel):
+    mode: str  # "generate" or "evaluate"
+    topic: str
+    question: Optional[str] = None
+    answer: Optional[str] = None
 
 # --- Endpoints ---
 
@@ -113,3 +124,94 @@ async def generate_study_plan(req: GenerateStudyPlanRequest):
     except Exception as e:
         print(f"LLM Error: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate study plan.")
+
+@router.post("/evaluate")
+async def evaluate_code(req: EvaluateCodeRequest):
+    client = get_groq_client()
+    
+    prompt = f"""
+    Evaluate this student's response or code snippet for the topic: {req.topic}.
+    Content:
+    {req.code}
+    
+    Provide a detailed evaluation with a rubric score (0-10) for: syntax, logic, bestPractices, and readability.
+    Also provide an overallScore (0-100) and constructive feedback.
+    
+    Output strictly as valid JSON matching this schema:
+    {{
+        "rubricScore": {{
+            "syntax": number,
+            "logic": number,
+            "bestPractices": number,
+            "readability": number
+        }},
+        "overallScore": number,
+        "feedback": "string",
+        "detectedWeakTopics": ["string"]
+    }}
+    """
+    
+    try:
+        response = client.chat.completions.create(
+            model="llama3-70b-8192",
+            messages=[
+                {"role": "system", "content": "You are an expert academic evaluator. Output JSON only."},
+                {"role": "user", "content": prompt}
+            ],
+            response_format={"type": "json_object"},
+            temperature=0.3,
+        )
+        data = json.loads(response.choices[0].message.content)
+        # Mocking some required frontend fields
+        data.update({
+            "submissionId": "sub_" + os.urandom(4).hex(),
+            "updatedReadinessScore": 75, 
+            "updatedConfidenceScore": 80
+        })
+        return data
+    except Exception as e:
+        print(f"LLM Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to evaluate content.")
+
+@router.post("/discussion")
+async def run_discussion(req: RunInterviewRequest):
+    client = get_groq_client()
+    
+    if req.mode == "generate":
+        prompt = f"Generate a challenging academic question for the topic: {req.topic}. Focus on core concepts."
+        system_msg = "You are a teacher engaging in a discussion. Provide only the question as text."
+    else:
+        prompt = f"Evaluate this answer for the topic {req.topic}.\nQuestion: {req.question}\nAnswer: {req.answer}\n\nProvide an overallScore (0-100) and feedback."
+        system_msg = "You are an evaluator. Output strictly JSON: {\"overallScore\": number, \"feedback\": \"string\"}"
+
+    try:
+        if req.mode == "generate":
+            response = client.chat.completions.create(
+                model="llama3-8b-8192",
+                messages=[
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+            )
+            return {"question": response.choices[0].message.content, "topic": req.topic}
+        else:
+            response = client.chat.completions.create(
+                model="llama3-70b-8192",
+                messages=[
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format={"type": "json_object"},
+                temperature=0.3,
+            )
+            data = json.loads(response.choices[0].message.content)
+            data.update({
+                "submissionId": "int_" + os.urandom(4).hex(),
+                "updatedReadinessScore": 75,
+                "updatedConfidenceScore": 80
+            })
+            return data
+    except Exception as e:
+        print(f"LLM Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to process discussion.")

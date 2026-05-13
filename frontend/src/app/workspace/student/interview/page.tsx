@@ -14,12 +14,12 @@ import { Loader2, MessageSquare, Brain, Play, CheckCircle2, AlertTriangle, Arrow
 // ─── CONSTANTS ──────────────────────────────────────────────────────────────
 
 const TOPICS = [
-    { value: "rtl", label: "RTL Design" },
-    { value: "sta", label: "Static Timing (STA)" },
-    { value: "digital", label: "Digital Logic" },
-    { value: "physical", label: "Physical Design" },
-    { value: "dft", label: "Design for Test (DFT)" },
-    { value: "scripting", label: "Scripting / Automation" }
+    { value: "math", label: "Mathematics" },
+    { value: "science", label: "General Science" },
+    { value: "languages", label: "Literature / Languages" },
+    { value: "social", label: "Social Studies" },
+    { value: "cs", label: "Computer Science" },
+    { value: "aptitude", label: "Logical Aptitude" }
 ];
 
 // ─── TYPES ──────────────────────────────────────────────────────────────────
@@ -46,7 +46,7 @@ export default function InterviewPage() {
 }
 
 function InterviewSimulator() {
-    const [topic, setTopic] = useState("rtl");
+    const [topic, setTopic] = useState("math");
     const [currentQuestion, setCurrentQuestion] = useState<string | null>(null);
     const [userAnswer, setUserAnswer] = useState("");
     const [evaluationResult, setEvaluationResult] = useState<EvaluateAnswerResult | null>(null);

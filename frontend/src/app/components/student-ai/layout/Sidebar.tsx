@@ -9,8 +9,8 @@ const navItems = [
     { href: "/workspace/student", label: "Dashboard", icon: LayoutDashboard },
     { href: "/workspace/student/planner", label: "Study Planner", icon: BookOpen },
     { href: "/workspace/student/tutor", label: "AI Tutor", icon: Brain },
-    { href: "/workspace/student/interview", label: "Interview Prep", icon: MessageSquare },
-    { href: "/workspace/student/code-lab", label: "Code Lab", icon: Code2 },
+    { href: "/workspace/student/interview", label: "Discussion AI", icon: MessageSquare },
+    { href: "/workspace/student/code-lab", label: "Practice Lab", icon: Code2 },
     { href: "/workspace/student/dropout-risk", label: "Dropout Risk", icon: AlertTriangle },
     { href: "/workspace/student/parent-voice", label: "Parent Voice", icon: PhoneCall },
 ] as const;
@@ -57,7 +57,7 @@ export default function Sidebar() {
             {/* Footer */}
             <div className="p-4 border-t border-black/10">
                 <p className="text-xs text-zinc-600 text-center font-medium">
-                    VLSI Mentor — v1.0
+                    Shiksha Link — v1.0
                 </p>
             </div>
         </aside >

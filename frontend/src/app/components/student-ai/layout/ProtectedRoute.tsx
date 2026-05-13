@@ -14,7 +14,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push("/workspace/student/login");
+            router.push("/auth");
         }
     }, [user, loading, router]);
 

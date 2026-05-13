@@ -50,7 +50,7 @@ function StudyPlanner() {
     const [generating, setGenerating] = useState(false);
 
     // Generation Inputs
-    const [targetRole, setTargetRole] = useState("VLSI Verification Engineer");
+    const [targetRole, setTargetRole] = useState("Software Engineer");
     const [interviewDate, setInterviewDate] = useState("");
     const [hoursPerDay, setHoursPerDay] = useState<number>(3);
 
@@ -162,7 +162,7 @@ function StudyPlanner() {
                                 <Input
                                     value={targetRole}
                                     onChange={(e) => setTargetRole(e.target.value)}
-                                    placeholder="e.g., RTL Design Engineer"
+                                    placeholder="e.g., Data Structures or Web Dev"
                                     className="h-12 bg-[var(--sl-paper)]/40 border-black/10 text-sl-text rounded-xl focus-visible:ring-indigo-500"
                                 />
                             </div>

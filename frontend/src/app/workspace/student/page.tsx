@@ -37,8 +37,8 @@ function Skeleton({ className = "" }: { className?: string }) {
 }
 
 const DOMAIN_LABELS: Record<string, string> = {
-    rtl: "RTL Design", digital: "Digital Logic", sta: "Static Timing",
-    physical: "Physical Design", dft: "DFT", scripting: "Scripting",
+    rtl: "Mathematics", digital: "Science", sta: "Languages",
+    physical: "Social Studies", dft: "Computer Science", scripting: "Aptitude",
 };
 
 // ─── Dashboard Content ────────────────────────────────────────────────────────
@@ -55,12 +55,12 @@ function DashboardContent() {
     }, [studyPlan?.interviewDate]);
 
     const radarData = useMemo(() => [
-        { domain: "RTL", score: userData?.skillScores.rtl ?? 0 },
-        { domain: "Digital", score: userData?.skillScores.digital ?? 0 },
-        { domain: "STA", score: userData?.skillScores.sta ?? 0 },
-        { domain: "Physical", score: userData?.skillScores.physical ?? 0 },
-        { domain: "DFT", score: userData?.skillScores.dft ?? 0 },
-        { domain: "Scripting", score: userData?.skillScores.scripting ?? 0 },
+        { domain: "Math", score: userData?.skillScores.rtl ?? 0 },
+        { domain: "Science", score: userData?.skillScores.digital ?? 0 },
+        { domain: "Languages", score: userData?.skillScores.sta ?? 0 },
+        { domain: "Social", score: userData?.skillScores.physical ?? 0 },
+        { domain: "Computer", score: userData?.skillScores.dft ?? 0 },
+        { domain: "Aptitude", score: userData?.skillScores.scripting ?? 0 },
     ], [userData?.skillScores]);
 
     const trendData = useMemo(() =>
@@ -72,7 +72,7 @@ function DashboardContent() {
         const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().split("T")[0];
     }, []);
 
-    const [planForm, setPlanForm] = useState({ targetRole: "RTL Design Engineer", interviewDate: defaultDate, hoursPerDay: 4 });
+    const [planForm, setPlanForm] = useState({ targetRole: "Computer Science", interviewDate: defaultDate, hoursPerDay: 4 });
     const [generating, setGenerating] = useState(false);
     const [genError, setGenError] = useState<string | null>(null);
     const [planExpanded, setPlanExpanded] = useState(false);
@@ -88,7 +88,7 @@ function DashboardContent() {
 
     const handleDownloadPDF = () => {
         if (!studyPlan) return;
-        const role = studyPlan.targetRole ?? "VLSI Engineer";
+        const role = studyPlan.targetRole ?? "General Learning";
         const date = studyPlan.interviewDate
             ? new Date(studyPlan.interviewDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
             : "TBD";
@@ -190,7 +190,7 @@ function DashboardContent() {
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-extrabold text-sl-text tracking-normal drop-shadow-sm">Dashboard</h1>
-                <p className="text-sm font-medium text-black/60 mt-1">Your VLSI readiness overview</p>
+                <p className="text-sm font-medium text-black/60 mt-1">Your academic readiness overview</p>
             </div>
 
             {/* ── Stat cards ── */}
@@ -198,19 +198,19 @@ function DashboardContent() {
 
                 <div className="relative rounded-3xl p-[1px] overflow-hidden group shadow-2xl">
                     <div className="absolute inset-0 bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0%,transparent_75%,#f97316_100%)] animate-[spin_4s_linear_infinite]" />
-                    <Card className="rounded-[calc(1.5rem-1px)] border-0 bg-gradient-to-br from-orange-500/5 via-orange-950/20 to-black/90 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-3xl h-full relative z-10 transition-all duration-500">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500/0 via-orange-500/50 to-orange-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <Card className="rounded-[calc(1.5rem-1px)] border-0 bg-gradient-to-br from-indigo-500/5 via-indigo-950/20 to-black/90 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-3xl h-full relative z-10 transition-all duration-500">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500/0 via-indigo-500/50 to-indigo-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <CardContent className="p-6">
                             <div className="flex items-center gap-2 mb-3">
                                 <Target size={15} className="text-sl-primary" />
-                                <span className="text-sm font-medium text-black/70">Industry Readiness</span>
+                                <span className="text-sm font-medium text-black/70">Academic Readiness</span>
                             </div>
                             <div className="flex items-end gap-2">
                                 <span className="text-4xl font-bold text-sl-text">{displayReadiness}</span>
                                 <span className="text-lg text-black/50 mb-1">/ 100</span>
                             </div>
                             <div className="mt-3 h-1.5 bg-black/10 rounded-full overflow-hidden">
-                                <div className="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full transition-all duration-1000" style={{ width: `${Math.min(displayReadiness, 100)}%` }} />
+                                <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-400 rounded-full transition-all duration-1000" style={{ width: `${Math.min(displayReadiness, 100)}%` }} />
                             </div>
                         </CardContent>
                     </Card>
@@ -246,8 +246,8 @@ function DashboardContent() {
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500/0 via-amber-500/50 to-amber-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <CardContent className="p-6">
                             <div className="flex items-center gap-2 mb-3">
-                                <Calendar size={15} className="text-amber-500" />
-                                <span className="text-sm font-medium text-black/70">Interview Countdown</span>
+                                <Calendar size={15} className="text-emerald-500" />
+                                <span className="text-sm font-medium text-black/70">Exam Countdown</span>
                             </div>
                             {daysRemaining !== null ? (
                                 <div className="flex items-end gap-2">

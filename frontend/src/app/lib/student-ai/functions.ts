@@ -5,24 +5,22 @@
  * Errors are normalised to plain strings, never raw Firebase error objects.
  */
 
-import { httpsCallable, HttpsCallableResult } from "firebase/functions";
-import { functions } from "@/app/lib/student-ai/firebase";
+import { apiPost } from "@/app/lib/api";
 
 // ─── Shared helper ────────────────────────────────────────────────────────────
 
 async function callFn<TReq, TRes>(
-    name: string,
+    path: string,
     payload: TReq,
 ): Promise<{ data: TRes | null; error: string | null }> {
     try {
-        const fn = httpsCallable<TReq, TRes>(functions, name);
-        const result: HttpsCallableResult<TRes> = await fn(payload);
-        return { data: result.data, error: null };
+        const data = await apiPost<TRes>(`/api/student-mentor${path}`, payload);
+        return { data, error: null };
     } catch (err: unknown) {
         const msg =
             err instanceof Error
-                ? err.message.replace("FirebaseError: ", "")
-                : "Unexpected error calling Cloud Function.";
+                ? err.message
+                : "Unexpected error calling AI service.";
         return { data: null, error: msg };
     }
 }
@@ -52,7 +50,7 @@ export interface EvaluateCodeResult {
 }
 
 export const callEvaluateCode = (p: EvaluateCodeRequest) =>
-    callFn<EvaluateCodeRequest, EvaluateCodeResult>("evaluateCode", p);
+    callFn<EvaluateCodeRequest, EvaluateCodeResult>("/evaluate", p);
 
 // ─── getTutorResponse ─────────────────────────────────────────────────────────
 
@@ -75,7 +73,7 @@ export interface GetTutorResult {
 }
 
 export const callGetTutorResponse = (p: GetTutorRequest) =>
-    callFn<GetTutorRequest, GetTutorResult>("getTutorResponse", p);
+    callFn<GetTutorRequest, GetTutorResult>("/tutor", p);
 
 // ─── runInterview ─────────────────────────────────────────────────────────────
 
@@ -109,7 +107,7 @@ export interface EvaluateAnswerResult {
 
 export const callRunInterview = (p: RunInterviewRequest) =>
     callFn<RunInterviewRequest, GenerateQuestionResult | EvaluateAnswerResult>(
-        "runInterview",
+        "/discussion",
         p,
     );
 
@@ -135,6 +133,6 @@ export interface GenerateStudyPlanResult {
 
 export const callGenerateStudyPlan = (p: GenerateStudyPlanRequest) =>
     callFn<GenerateStudyPlanRequest, GenerateStudyPlanResult>(
-        "generateStudyPlan",
+        "/plan",
         p,
     );

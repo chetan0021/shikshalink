@@ -249,9 +249,9 @@ function TutorChatbot() {
                                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(99,102,241,0.15)]">
                                     <Brain className="text-indigo-400" size={32} />
                                 </div>
-                                <h3 className="text-xl font-bold text-sl-text mb-2">How can I help you learn VLSI?</h3>
+                                <h3 className="text-xl font-bold text-sl-text mb-2">How can I help you learn today?</h3>
                                 <p className="text-sm text-black/60 max-w-md mx-auto leading-relaxed">
-                                    Ask me to explain concepts line CDC, setup/hold time violations, arbitrary Verilog syntax, or even request an analogy for complex architecture.
+                                    Ask me to explain any concept, provide an analogy, or even request a real-world scenario for complex topics.
                                 </p>
                             </div>
                         ) : (
@@ -276,7 +276,7 @@ function TutorChatbot() {
                                 <Input
                                     value={inputText}
                                     onChange={e => setInputText(e.target.value)}
-                                    placeholder="Enter a VLSI concept (e.g., Explain Setup Time)..."
+                                    placeholder="Enter any topic or question (e.g., Explain Quantum Physics)..."
                                     disabled={loading}
                                     className="w-full bg-sl-light border-black/10 text-sl-text placeholder:text-black/50 rounded-2xl pl-5 pr-12 py-6 text-sm focus-visible:ring-1 focus-visible:ring-indigo-500"
                                 />
