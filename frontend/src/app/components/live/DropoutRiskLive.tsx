@@ -43,13 +43,28 @@ export function DropoutRiskLive() {
       >
         {refresh.isPending ? "Refreshing…" : "Recompute risk with latest attendance"}
       </button>
+      {refresh.isError && (
+        <div className="rounded-md bg-rose-50 p-3 text-sm text-rose-600 border border-rose-200">
+          <p className="font-semibold">Refresh failed</p>
+          <p className="mt-1 opacity-80">
+            {refresh.error instanceof Error ? refresh.error.message : "An unknown error occurred"}
+          </p>
+        </div>
+      )}
       <div className="space-y-2">
         {!schoolId ? (
           <p className="text-sm text-slate-500">Sign in again to attach a school scope.</p>
         ) : cards.isLoading ? (
           <p className="text-sm text-slate-500">Loading risk cards…</p>
         ) : cards.isError ? (
-          <p className="text-sm text-rose-600">Risk feed offline. Start FastAPI.</p>
+          <div className="rounded-md bg-rose-50 p-3 text-sm text-rose-600 border border-rose-200">
+            <p className="font-semibold">Unable to load risk cards</p>
+            <p className="mt-1 opacity-80">
+              {cards.error instanceof Error ? cards.error.message : "Network error or backend offline."}
+            </p>
+          </div>
+        ) : cards.data?.length === 0 ? (
+          <p className="text-sm text-slate-500">No risk cards found for this school.</p>
         ) : (
           cards.data?.map((c) => (
             <article key={c.student_id} className="rounded-xl border border-slate-200 bg-white/95 p-3 text-sm shadow-sm">

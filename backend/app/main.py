@@ -15,6 +15,7 @@ from app.routers import (
     realtime,
     system,
     udise_ingestion,
+    student_mentor,
 )
 from app.services.seed_demo import seed_if_empty
 
@@ -61,4 +62,5 @@ app.include_router(beo_control_center.router, prefix="/api/beo-control-center", 
 app.include_router(udise_ingestion.router, prefix="/api/udise-ingestion", tags=["udise-ingestion"])
 app.include_router(india_heatmap.router, prefix="/api/india-heatmap", tags=["india-heatmap"])
 app.include_router(system.router, prefix="/api/system", tags=["system"])
+app.include_router(student_mentor.router, prefix="/api/student-mentor", tags=["student-mentor"])
 app.include_router(realtime.router)
