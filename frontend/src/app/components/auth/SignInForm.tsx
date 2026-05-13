@@ -44,6 +44,19 @@ export function SignInForm({ onRequestAccess }: { onRequestAccess: () => void })
   const { setSession } = useSession();
   const [show, setShow] = React.useState(false);
   const [schoolError, setSchoolError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const fetchDemoSchool = async () => {
+    try {
+      const data = await apiGet<{ schools: { id: string; name: string }[] }>("/api/system/demo-context");
+      if (data && data.schools && data.schools.length > 0) {
+        return data.schools[0];
+      }
+    } catch (e) {
+      console.error("Failed to fetch demo school", e);
+    }
+    return { id: "00000000-0000-0000-0000-000000000000", name: "Demo Public School" };
+  };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -57,27 +70,33 @@ export function SignInForm({ onRequestAccess }: { onRequestAccess: () => void })
 
   const demoQuickLogin = async () => {
     setSchoolError(null);
+    setLoading(true);
+    const school = await fetchDemoSchool();
     setSession({
       role: "teacher",
       displayName: "Demo visitor",
-      schoolId: "00000000-0000-0000-0000-000000000000",
-      schoolName: "Demo Public School"
+      schoolId: school.id,
+      schoolName: school.name
     });
+    setLoading(false);
     router.push("/workspace");
   };
 
   const enterWorkspace = form.handleSubmit(async (values) => {
     setSchoolError(null);
+    setLoading(true);
     const display =
       values.email && values.email.includes("@")
         ? values.email.split("@")[0] ?? "User"
         : values.email?.trim() || "Demo user";
+    const school = await fetchDemoSchool();
     setSession({
       role: mapRole(values.role),
       displayName: display,
-      schoolId: "00000000-0000-0000-0000-000000000000",
-      schoolName: "Demo Public School"
+      schoolId: school.id,
+      schoolName: school.name
     });
+    setLoading(false);
     router.push("/workspace");
   });
 
@@ -132,12 +151,12 @@ export function SignInForm({ onRequestAccess }: { onRequestAccess: () => void })
 
         {schoolError ? <p className="text-sm text-red-600">{schoolError}</p> : null}
 
-        <Button type="submit" className="w-full" size="lg" variant="primary">
-          Sign In — enter workspace
+        <Button type="submit" className="w-full" size="lg" variant="primary" disabled={loading}>
+          {loading ? "Entering workspace..." : "Sign In — enter workspace"}
         </Button>
       </form>
 
-      <Button type="button" variant="light" size="lg" className="w-full border border-black/10" onClick={demoQuickLogin}>
+      <Button type="button" variant="light" size="lg" className="w-full border border-black/10" onClick={demoQuickLogin} disabled={loading}>
         Skip fields — quick demo login
       </Button>
 

@@ -19,6 +19,12 @@ const tiles: { href: string; title: string; desc: string; roles: string[] }[] = 
     title: "Dropout Risk Dashboard",
     desc: "AI-powered school-scoped risk analytics and intervention planning.",
     roles: ["teacher", "beo"]
+  },
+  {
+    href: "/workspace/student",
+    title: "AI Mentor Dashboard",
+    desc: "Personalized VLSI study roadmap and interactive tutor powered by AI.",
+    roles: ["student"]
   }
 ];
 
