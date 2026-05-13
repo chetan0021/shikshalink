@@ -23,13 +23,13 @@ export default function Topbar() {
     return (
         <header className="h-16 bg-[var(--sl-paper)]/20 backdrop-blur-md border-b border-black/10 shrink-0 flex items-center justify-between px-6 relative z-10">
             <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#5ec4b1] shadow-[0_0_8px_rgba(94,196,177,0.8)] animate-pulse" />
-                <span className="text-sm font-medium text-black/60">Connected</span>
+                <div className={`w-2 h-2 rounded-full ${user ? "bg-[#5ec4b1]" : "bg-gray-400"} shadow-[0_0_8px_rgba(94,196,177,0.8)] animate-pulse` } />
+                <span className="text-sm font-medium text-black/60">{user ? "Connected" : "Guest Mode"}</span>
             </div>
 
             <div className="flex items-center gap-4">
                 <span className="text-sm font-medium text-black/70 truncate max-w-[220px]">
-                    {user?.email ?? ""}
+                    {user?.email ?? "Guest Student"}
                 </span>
                 <Button
                     variant="ghost"

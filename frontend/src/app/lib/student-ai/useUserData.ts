@@ -75,6 +75,17 @@ export function useUserData(): UseUserDataReturn {
 
     useEffect(() => {
         if (!user) {
+            setUserData({
+                skillScores: { rtl: 85, digital: 70, sta: 60, physical: 40, dft: 30, scripting: 50 },
+                readinessScore: 72,
+                confidenceScore: 85,
+                weakTopics: ["physical", "dft"] as SkillDomain[],
+            });
+            setRecentEvals([
+                { overallScore: 82, type: "quiz", topic: "Mathematics" },
+                { overallScore: 75, type: "interview", topic: "Science" },
+                { overallScore: 68, type: "code", topic: "Languages" },
+            ]);
             setLoading(false);
             return;
         }
