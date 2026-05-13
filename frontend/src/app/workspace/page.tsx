@@ -11,14 +11,14 @@ const tiles: { href: string; title: string; desc: string; roles: string[] }[] = 
   {
     href: "/workspace/parent-voice",
     title: "Parent Voice AI",
-    desc: "Demo call queue + finalize (ties to deep-research voice flow).",
+    desc: "Interactive demo for parental voice alerts and communication.",
     roles: ["teacher", "parent", "beo", "student"]
   },
   {
     href: "/workspace/dropout",
-    title: "Dropout risk",
-    desc: "School-scoped risk cards from the FastAPI engine.",
-    roles: ["teacher", "beo", "student"]
+    title: "Dropout Risk Dashboard",
+    desc: "AI-powered school-scoped risk analytics and intervention planning.",
+    roles: ["teacher", "beo"]
   }
 ];
 
