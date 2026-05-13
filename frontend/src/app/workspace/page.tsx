@@ -33,7 +33,13 @@ export default function WorkspacePage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (hydrated && !session) router.replace("/auth");
+    if (hydrated) {
+      if (!session) {
+        router.replace("/auth");
+      } else if (session.role === "student") {
+        router.replace("/workspace/student");
+      }
+    }
   }, [hydrated, session, router]);
 
   if (!hydrated || !session) {

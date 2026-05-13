@@ -1,6 +1,5 @@
 import os
 from uuid import UUID
-
 from typing import Literal, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -15,7 +14,54 @@ from app.schemas import ParentCallOut, TriggerCallBody
 from app.services.risk_engine import compute_student_risk
 from app.services.tts_demo import run_tts_sync
 
+from twilio.jwt.access_token import AccessToken
+from twilio.jwt.access_token.grants import VoiceGrant
+
 router = APIRouter()
+
+@router.get("/token")
+def get_voice_token(identity: str = Query("teacher-demo")) -> dict:
+    """Generate a Twilio Access Token for the Voice JS SDK."""
+    account_sid = os.getenv("TWILIO_ACCOUNT_SID", "")
+    api_key = os.getenv("TWILIO_API_KEY", "")
+    api_secret = os.getenv("TWILIO_API_SECRET", "")
+    twiml_app_sid = os.getenv("TWILIO_TWIML_APP_SID", "")
+
+    if not (account_sid and api_key and api_secret and twiml_app_sid):
+        raise HTTPException(
+            status_code=500,
+            detail="Twilio Voice SDK credentials not fully configured (API Key/Secret/App SID)."
+        )
+
+    token = AccessToken(account_sid, api_key, api_secret, identity=identity)
+    
+    grant = VoiceGrant(
+        outgoing_application_sid=twiml_app_sid,
+        incoming_allow=True
+    )
+    token.add_grant(grant)
+    
+    return {"token": token.to_jwt()}
+
+
+@router.post("/voice-webhook")
+async def voice_webhook(To: str = Query(None)):
+    """TwiML Webhook for outbound calls from the browser SDK."""
+    # Twilio sends 'To' in the body/query when we connect from the SDK
+    # We want to dial that number.
+    if not To:
+        return Response(
+            content="<Response><Say>No destination number provided.</Say></Response>",
+            media_type="application/xml"
+        )
+    
+    twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Dial callerId="{os.getenv('TWILIO_FROM_NUMBER')}">
+        <Number>{To}</Number>
+    </Dial>
+</Response>"""
+    return Response(content=twiml, media_type="application/xml")
 
 
 class FinalizeDemoPayload(BaseModel):
@@ -58,14 +104,17 @@ async def trigger_call(body: TriggerCallBody, db: Session = Depends(get_db)) -> 
         try:
             from twilio.rest import Client  # imported lazily so demo still works without the package
 
+            print(f"[Twilio] Attempting call to {body.custom_phone_number} from {from_number}")
             client = Client(account_sid, auth_token)
             tw_call = client.calls.create(
                 to=body.custom_phone_number,
                 from_=from_number,
                 twiml=twiml,
             )
+            print(f"[Twilio] Call created. Status: {tw_call.status}, SID: {tw_call.sid}")
             call_status = tw_call.status  # e.g. "queued", "initiated"
         except Exception as exc:
+            print(f"[Twilio] Call failed: {exc}")
             call_status = "failed"
             # Store the event with failed status so the UI can surface the error
             event = ParentCallEvent(

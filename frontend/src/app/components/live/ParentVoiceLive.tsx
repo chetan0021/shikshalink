@@ -1,7 +1,8 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { Device, Call } from "@twilio/voice-sdk";
 
 import { apiGet, apiPost } from "@/app/lib/api";
 
@@ -28,6 +29,12 @@ export function ParentVoiceLive() {
   const qc = useQueryClient();
   const [language, setLanguage] = useState<"kn" | "hi" | "en">("kn");
   const [customPhone, setCustomPhone] = useState("");
+  
+  // Live Browser Call State
+  const [device, setDevice] = useState<Device | null>(null);
+  const [activeCall, setActiveCall] = useState<Call | null>(null);
+  const [callStatus, setCallStatus] = useState<"idle" | "connecting" | "open" | "failed">("idle");
+  const [tokenError, setTokenError] = useState<string | null>(null);
 
   const demo = useQuery({
     queryKey: ["demo-context"],
@@ -36,13 +43,19 @@ export function ParentVoiceLive() {
 
   const firstStudentId = useMemo(() => demo.data?.students[0]?.id, [demo.data?.students]);
 
+  // ── Outbound PSTN Trigger ──────────────────────────────────────────────────
   const trigger = useMutation({
-    mutationFn: (studentId: string) =>
-      apiPost<CallEvent>("/api/parent-voice-ai/trigger-call", {
+    mutationFn: (studentId: string) => {
+      let phone = customPhone.trim();
+      if (/^\d{10}$/.test(phone)) {
+        phone = `+91${phone}`;
+      }
+      return apiPost<CallEvent>("/api/parent-voice-ai/trigger-call", {
         student_id: studentId,
         language,
-        ...(customPhone.trim() ? { custom_phone_number: customPhone.trim() } : {}),
-      }),
+        ...(phone ? { custom_phone_number: phone } : {}),
+      });
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["demo-context"] })
   });
 
@@ -57,6 +70,78 @@ export function ParentVoiceLive() {
     }
   });
 
+  // ── Live Browser Calling Logic ─────────────────────────────────────────────
+  
+  const setupDevice = async () => {
+    try {
+      setTokenError(null);
+      const { token } = await apiGet<{ token: string }>("/api/parent-voice-ai/token");
+      
+      const newDevice = new Device(token, {
+        codecPreferences: [Call.Codec.Opus, Call.Codec.PCMU],
+      });
+
+      newDevice.on("error", (error) => {
+        console.error("Twilio Device Error:", error);
+        setTokenError(`Device Error: ${error.message}`);
+      });
+
+      setDevice(newDevice);
+      return newDevice;
+    } catch (err: any) {
+      setTokenError("Failed to get voice token. Ensure TWILIO_API_KEY/SECRET and APP_SID are set in .env");
+      return null;
+    }
+  };
+
+  const handleBrowserCall = async () => {
+    let currentDevice = device;
+    if (!currentDevice) {
+      currentDevice = await setupDevice();
+    }
+    if (!currentDevice) return;
+
+    let phone = customPhone.trim();
+    if (!phone) {
+      setTokenError("Please enter a phone number for the browser call.");
+      return;
+    }
+    if (/^\d{10}$/.test(phone)) {
+      phone = `+91${phone}`;
+    }
+
+    setCallStatus("connecting");
+    try {
+      const call = await currentDevice.connect({ params: { To: phone } });
+      
+      call.on("accept", () => {
+        setCallStatus("open");
+        setActiveCall(call);
+      });
+
+      call.on("disconnect", () => {
+        setCallStatus("idle");
+        setActiveCall(null);
+      });
+
+      call.on("error", (error) => {
+        console.error("Call Error:", error);
+        setCallStatus("failed");
+        setTokenError(`Call Error: ${error.message}`);
+      });
+
+    } catch (err: any) {
+      setCallStatus("failed");
+      setTokenError(`Connection failed: ${err.message}`);
+    }
+  };
+
+  const handleHangup = () => {
+    if (activeCall) {
+      activeCall.disconnect();
+    }
+  };
+
   const studentId = firstStudentId ?? "";
 
   return (
@@ -64,16 +149,7 @@ export function ParentVoiceLive() {
       <div className="rounded-xl border border-indigo-100 bg-indigo-50/90 p-3 text-xs text-indigo-950">
         <p className="font-semibold text-indigo-900">Real PSTN / SIP (production)</p>
         <p className="mt-1 text-indigo-900/90">
-          Wire Twilio or Asterisk as in <code className="rounded bg-white/80 px-1">deep-research-report.md</code> (CallerAgent,{" "}
-          <a
-            href="https://github.com/SABARNO-PRAMANICK/CallerAgent"
-            className="font-medium underline"
-            target="_blank"
-            rel="noreferrer"
-          >
-            CallerAgent repo
-          </a>
-          ). This button hits the FastAPI <strong>demo</strong> queue only.
+          Twilio Voice is now active. Choose between <strong>Automated Alert</strong> (reads script) or <strong>Live Browser Call</strong> (talk directly).
         </p>
       </div>
 
@@ -99,6 +175,7 @@ export function ParentVoiceLive() {
           </button>
         ))}
       </div>
+      
       <div className="rounded-xl border border-slate-200 bg-white/90 p-3 text-sm text-slate-700">
         {demo.isLoading ? (
           "Loading demo roster…"
@@ -108,56 +185,86 @@ export function ParentVoiceLive() {
           <span>
             First demo student:{" "}
             <span className="font-semibold">{demo.data?.students[0]?.name ?? "None"}</span>
-            {demo.data?.students[0]?.parent_phone ? (
-              <span className="block text-xs text-slate-500">Phone on file (masked in UI in prod)</span>
-            ) : null}
           </span>
         )}
       </div>
-      {/* ── Real Twilio call: enter a verified Twilio number (e.g. +919876543210) ── */}
+
+      {/* ── Destination Input ── */}
       <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 space-y-1.5">
         <label
           htmlFor="custom-phone-input"
           className="block text-xs font-semibold text-emerald-800"
         >
-          📞 Real Twilio Call — Enter Verified Phone Number
+          📞 Phone Number (Verified Twilio Number)
         </label>
         <input
           id="custom-phone-input"
           type="tel"
           value={customPhone}
           onChange={(e) => setCustomPhone(e.target.value)}
-          placeholder="+91XXXXXXXXXX  (leave blank for demo queue)"
+          placeholder="+91XXXXXXXXXX"
           className="w-full rounded-lg border border-emerald-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400"
         />
-        <p className="text-[11px] text-emerald-700/80">
-          Trial accounts can only call numbers verified in your Twilio console.
-        </p>
       </div>
 
-      <button
-        type="button"
-        disabled={!studentId || trigger.isPending}
-        onClick={() => trigger.mutate(studentId)}
-        className="w-full rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-left text-sm font-medium text-indigo-700 disabled:opacity-50"
-      >
-        {trigger.isPending
-          ? "Placing call…"
-          : customPhone.trim()
-          ? `📲 Call ${customPhone.trim()} now`
-          : "Trigger safe demo parent call (API)"}
-      </button>
-      {trigger.data ? (
+      {/* ── Call Buttons ── */}
+      <div className="grid gap-2 grid-cols-2">
         <button
           type="button"
-          disabled={finalize.isPending}
-          onClick={() => finalize.mutate(trigger.data.id)}
-          className="w-full rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-left text-sm font-medium text-amber-800 disabled:opacity-50"
+          disabled={!studentId || trigger.isPending}
+          onClick={() => trigger.mutate(studentId)}
+          className="rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-3 text-center text-xs font-bold text-indigo-700 disabled:opacity-50 transition-all hover:bg-indigo-100"
         >
-          {finalize.isPending ? "Finalizing…" : "Complete demo call + sentiment capture"}
+          {trigger.isPending ? "Placing..." : "📣 SEND AUTOMATED ALERT"}
         </button>
+
+        {callStatus === "open" ? (
+          <button
+            type="button"
+            onClick={handleHangup}
+            className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-3 text-center text-xs font-bold text-rose-700 transition-all hover:bg-rose-100 animate-pulse"
+          >
+            🛑 HANG UP LIVE CALL
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled={!customPhone.trim() || callStatus === "connecting"}
+            onClick={handleBrowserCall}
+            className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-center text-xs font-bold text-emerald-700 disabled:opacity-50 transition-all hover:bg-emerald-100"
+          >
+            {callStatus === "connecting" ? "CONNECTING..." : "🎙️ START LIVE BROWSER CALL"}
+          </button>
+        )}
+      </div>
+
+      {/* ── Status & Errors ── */}
+      {trigger.isError ? (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+          <strong>Alert Error:</strong> {(trigger.error as any)?.detail || "Failed to trigger automated call."}
+        </div>
       ) : null}
-      {trigger.data ? <p className="text-xs text-slate-500">Queued call id: {trigger.data.id}</p> : null}
+
+      {tokenError && (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+          <strong>Live Call Error:</strong> {tokenError}
+          <p className="mt-1 opacity-70">Make sure your .env has API_KEY, API_SECRET and APP_SID.</p>
+        </div>
+      ) }
+
+      {trigger.data ? (
+        <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl space-y-2">
+           <p className="text-xs text-amber-800 font-medium">Automated call queued (ID: {trigger.data.id})</p>
+           <button
+            type="button"
+            disabled={finalize.isPending}
+            onClick={() => finalize.mutate(trigger.data!.id)}
+            className="w-full rounded-lg bg-amber-200/50 py-1.5 text-xs font-bold text-amber-900 hover:bg-amber-200"
+          >
+            {finalize.isPending ? "Finalizing…" : "Complete demo flow"}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Code2, Brain, MessageSquare, BookOpen } from "lucide-react";
+import { LayoutDashboard, Code2, Brain, MessageSquare, BookOpen, AlertTriangle, PhoneCall } from "lucide-react";
 import { cn } from "@/app/lib/student-ai/utils";
 
 const navItems = [
     { href: "/workspace/student", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/workspace/student/code-lab", label: "Code Lab", icon: Code2 },
-    { href: "/workspace/student/tutor", label: "AI Tutor", icon: Brain },
-    { href: "/workspace/student/interview", label: "Interview", icon: MessageSquare },
     { href: "/workspace/student/planner", label: "Study Planner", icon: BookOpen },
+    { href: "/workspace/student/tutor", label: "AI Tutor", icon: Brain },
+    { href: "/workspace/student/interview", label: "Interview Prep", icon: MessageSquare },
+    { href: "/workspace/student/code-lab", label: "Code Lab", icon: Code2 },
+    { href: "/workspace/student/dropout-risk", label: "Dropout Risk", icon: AlertTriangle },
+    { href: "/workspace/student/parent-voice", label: "Parent Voice", icon: PhoneCall },
 ] as const;
 
 export default function Sidebar() {
@@ -21,10 +23,10 @@ export default function Sidebar() {
             {/* Logo */}
             <div className="h-16 flex items-center px-6 border-b border-black/10 shrink-0">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.4)]">
-                        <span className="text-lg">🧠</span>
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#5ec4b1] to-[#7dd3c0] flex items-center justify-center shadow-[0_0_15px_rgba(94,196,177,0.4)]">
+                        <span className="text-lg text-white">🎓</span>
                     </div>
-                    <span className="text-lg font-bold text-sl-text tracking-wide">Rycene AI</span>
+                    <span className="text-lg font-bold text-sl-text tracking-wide">Shiksha Link</span>
                 </div>
             </div>
 
@@ -38,13 +40,13 @@ export default function Sidebar() {
                             href={href}
                             className={cn(
                                 isActive
-                                    ? "text-sl-text font-semibold flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-all duration-200 bg-sl-primary/10 border border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)]"
-                                    : "text-black/60 hover:bg-white/5 hover:text-black/80 flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200"
+                                    ? "text-sl-text font-semibold flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-all duration-200 bg-[var(--sl-primary)]/10 border border-[var(--sl-primary)]/20 shadow-[0_0_15px_rgba(94,196,177,0.15)]"
+                                    : "text-black/60 hover:bg-black/5 hover:text-black/80 flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200"
                             )}
                         >
                             <Icon
                                 size={18}
-                                className={isActive ? "text-orange-400" : "text-black/50"}
+                                className={isActive ? "text-[#5ec4b1]" : "text-black/50"}
                             />
                             {label}
                         </Link>
